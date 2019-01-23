@@ -35,13 +35,15 @@ class Tickets extends Component {
           this.state.account.accountRegistered
           ? this.state.loading
             ? <div className='col-xs-12'>Loading...</div>
+            : this.state.assignedTickets.length === 0 
+            ? <div className='col-xs-12'>No tickets assigned</div>
             : this.state.assignedTickets.map(ticket =>
                 <div className='col-xs-12'>
                   <h3><a href={'/ticket/' + ticket.id}>{ticket.title}</a> ({ticket.statusText})</h3>
                   <p className='ticket-description'>{ticket.description}</p>
                 </div>
               )
-          : <div className='col-xs-12'>Please register</div>          
+          : <div className='col-xs-12'>Please register your account</div>          
         }
       </div>
     )
