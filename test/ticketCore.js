@@ -3,23 +3,23 @@ var TicketCore = artifacts.require("TicketCore");
 contract('TicketCore', function(accounts) {
   var admin = accounts[0];
   var ethAmount = 5200000000000000;
-  var smallEthAmount = 1
+  var smallEthAmount = 1;
   let tCore;
   let accNoFunds = web3.eth.accounts.create('test123');
-//  web3.eth.personal.unlockAccount(accNoFunds.address, 'test123');
+  //  web3.eth.personal.unlockAccount(accNoFunds.address, 'test123');
 
   beforeEach('Setup contract for each test', async () => {
     tCore = await TicketCore.new();
-  })
+  });
 
   it('Has an owner', async () => {
-    assert.equal(await tCore.admin(), admin)
-  })
+    assert.equal(await tCore.admin(), admin);
+  });
 
   it('Account can be created only once', async () => {
-    await tCore.createAccount()
+    await tCore.createAccount();
     try{
-      await tCore.createAccount()
+      await tCore.createAccount();
     }
     catch(e){
       const revertErr = e.message.search('revert') >= 0;
@@ -27,23 +27,23 @@ contract('TicketCore', function(accounts) {
       return;
     }
     assert.fail('Expected throw not received');
-  })
+  });
 
   it('Ticket can be created and assigned', async () => {
-    await tCore.createAccount({from: accounts[0]})
-    await tCore.createAccount({from: accounts[1]})
+    await tCore.createAccount({from: accounts[0]});
+    await tCore.createAccount({from: accounts[1]});
     let ans = await tCore.createTicket(accounts[1],
-      "Website renders slow", 
-      "We need to do something about it.", {from: accounts[0]})
-    assert.equal(ans.receipt.status, true)
-  })
+                                       "Website renders slow", 
+                                       "We need to do something about it.", {from: accounts[0]});
+    assert.equal(ans.receipt.status, true);
+  });
 
   it('Ticket can only be created by account', async () => {
     await tCore.createAccount({from: accounts[1]})
     try{
       let ans = await tCore.createTicket(accounts[1],
-        "Website renders slow", 
-        "We need to do something about it.", {from: accounts[0]})
+                                         "Website renders slow", 
+                                         "We need to do something about it.", {from: accounts[0]});
     }
     catch(e){
       const revertErr = e.message.search('revert') >= 0;
@@ -57,8 +57,8 @@ contract('TicketCore', function(accounts) {
     await tCore.createAccount({from: accounts[0]})
     try{
       let ans = await tCore.createTicket(accounts[1],
-        "Website renders slow", 
-        "We need to do something about it.", {from: accounts[0]})
+                                         "Website renders slow", 
+                                         "We need to do something about it.", {from: accounts[0]});
     }
     catch(e){
       const revertErr = e.message.search('revert') >= 0;
@@ -72,8 +72,8 @@ contract('TicketCore', function(accounts) {
     await tCore.createAccount({from: accounts[2]})
     await tCore.createAccount({from: accounts[3]})
     let ans = await tCore.createTicket(accounts[2],
-      "Website renders slow", 
-      "We need to do something about it.", {from: accounts[3]})
+                                       "Website renders slow", 
+                                       "We need to do something about it.", {from: accounts[3]})
     assert.equal(ans.logs[0].args._assignee, accounts[2])
     assert.equal(ans.logs[0].args._owner, accounts[3])
   })
@@ -82,11 +82,11 @@ contract('TicketCore', function(accounts) {
     await tCore.createAccount({from: accounts[2]})
     await tCore.createAccount({from: accounts[3]})
     await tCore.createTicket(accounts[2],
-      "Website renders slow", 
-      "We need to do something about it.", {from: accounts[3]})
+                             "Website renders slow", 
+                             "We need to do something about it.", {from: accounts[3]})
     await tCore.createTicket(accounts[3],
-      "Test1", 
-      "Test description.", {from: accounts[2]})
+                             "Test1", 
+                             "Test description.", {from: accounts[2]})
     
     let ans1 = await tCore.getAssignedTicketsNumber(accounts[2]);
     let ans2 = await tCore.getOwnedTicketsNumber(accounts[2]);
@@ -103,11 +103,11 @@ contract('TicketCore', function(accounts) {
     await tCore.createAccount({from: accounts[2]})
     await tCore.createAccount({from: accounts[3]})
     await tCore.createTicket(accounts[2],
-      "Website renders slow", 
-      "We need to do something about it.", {from: accounts[3]})
+                             "Website renders slow", 
+                             "We need to do something about it.", {from: accounts[3]})
     await tCore.createTicket(accounts[2],
-      "Test1", 
-      "Test description.", {from: accounts[3]})
+                             "Test1", 
+                             "Test description.", {from: accounts[3]})
 
     let ans = await tCore.getAssignedTicketIds(accounts[2]);
     assert.equal(ans.length, 2);
@@ -128,7 +128,7 @@ contract('TicketCore', function(accounts) {
     assert.equal(tInfo[1], tDesc)
     assert.equal(tInfo[2], accounts[2])
     assert.equal(tInfo[3], accounts[3])
-    assert.equal(tInfo[4], 'TODO')
+    assert.equal(tInfo[4], 0)
     assert.equal(tInfo[5], 'TODO')
   })
 
